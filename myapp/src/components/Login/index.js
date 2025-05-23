@@ -5,18 +5,22 @@ import axios from 'axios'
 import './index.css'
 
 const Login = () => {
-
+    
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
-
+    const passwordType = showPassword ? 'text' : 'password'
+    
     const handleSubmit = async (event) => {
         event.preventDefault()
-        axios.post('http://localhost:3001/login', { email, password })
+        axios.post('http://localhost:3001/user/login', { email, password })
             .then(result => {
                 console.log(result)
-                if (result.data.status === 200) {
+                if (result.status === 201) {
                     alert('Login Successful')
+                    const token = result.data.token
+                Cookies.set('jwt_token',token , {expires:30})
                     navigate('/')
                 } else {
                     alert('Login Failed')
@@ -27,11 +31,13 @@ const Login = () => {
     }
 
    useEffect(() => {
+
             let token = Cookies.get('jwt_token')
             if(token !== undefined){
                 navigate('/')
             }
         })
+
 
         return(
             <div className="login">
@@ -44,7 +50,11 @@ const Login = () => {
                     </div>
                     <div className="input-container">
                         <label htmlFor='password'>password</label>
-                        <input type='password' id='password' placeholder='PASSWORD' onChange={(e) =>setPassword(e.target.value)}/> 
+                        <input type={passwordType} id='password' placeholder='PASSWORD' onChange={(e) =>setPassword(e.target.value)}/> 
+                    </div>
+                    <div className="input-container">
+                        <input type='checkbox' id='checkbox'  onChange={() =>setShowPassword((prevState => !prevState))}/> 
+                        <label htmlFor='checkbox'>password</label>
                     </div>
                     <button type='submit' className="submit">Login</button>
                     <p className="para">Don't Have an Account</p>

@@ -28,9 +28,9 @@ const Signup = () => {
     const handleSubmit  =  event => {
     
         event.preventDefault()
-        axios.post('http://localhost:3001/register',{username,email,password})
+        axios.post('http://localhost:3001/user/register',{username,email,password})
         .then(result => {console.log(result)
-            if(result.status === 200){
+            if(result.status === 201){
                 alert('User Created')
                 navigate('/login')
             }
